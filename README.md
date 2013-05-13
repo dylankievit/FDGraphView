@@ -9,8 +9,18 @@
 Add `FDGraphView.{h,m}` to your project, import the header where you want to use this little bastard and here you go:
 
     FDGraphView *graphView = [[FDGraphView alloc] initWithFrame:CGRectMake(10, 130, 300, 200)];
+
+    NSMutableArray *myDataPoints = [[NSMutableArray alloc] init];
     
-    graphView.dataPoints = @[@1, @2, @5, @12, @30, @100];
+    FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
+    [myDataPoints addObject:dp];
+    dp = [[FDDataPoint alloc] initWithX:2 Y:2 withColor:[UIColor blackColor] withStroke:nil];
+    [myDataPoints addObject:dp];
+    dp = [[FDDataPoint alloc] initWithX:4 Y:3];
+    [myDataPoints addObject:dp];
+    dp = [[FDDataPoint alloc] initWithX:5 Y:15];
+    [myDataPoints addObject:dp];
+    graphView.dataPoints = [[NSArray alloc] initWithArray:myDataPoints];
     
     [self.view addSubview:graphView];
 
@@ -29,8 +39,18 @@ Add `FDGraphScrollView.{h,m}` to your project, import the header where you want 
     FDGraphScrollView *scrollView = [[FDGraphScrollView alloc] initWithFrame:CGRectMake(10, 130, 300, 200)];
     
     // data
-    scrollView.dataPoints = @[@1, @2, @5, @12, @30, @100, @123, @44];
-    
+    NSMutableArray *myDataPoints = [[NSMutableArray alloc] init];
+   
+    FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
+    [myDataPoints addObject:dp];
+    dp = [[FDDataPoint alloc] initWithX:2 Y:2 withColor:[UIColor blackColor] withStroke:nil];
+    [myDataPoints addObject:dp];
+    dp = [[FDDataPoint alloc] initWithX:4 Y:3];
+    [myDataPoints addObject:dp];
+    dp = [[FDDataPoint alloc] initWithX:5 Y:15];
+    [myDataPoints addObject:dp];
+    scrollView.dataPoints = [[NSArray alloc] initWithArray:myDataPoints];
+
     [self.view addSubview:scrollView];
 
 This is the result:
