@@ -7,11 +7,9 @@
 //
 
 #import "FDGraphView.h"
+#import "FDDataPoint.h"
 
 @interface FDGraphView()
-
-@property (nonatomic, strong) NSNumber *maxDataPoint;
-@property (nonatomic, strong) NSNumber *minDataPoint;
 
 @end
 
@@ -23,9 +21,9 @@
     if (self) {
         // default values
         _edgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
-        _dataPointColor = [UIColor whiteColor];
-        _dataPointStrokeColor = [UIColor blackColor];
-        _linesColor = [UIColor grayColor];
+        _defaultDataPointColor = [UIColor whiteColor];
+        _defaultDataPointStrokeColor = [UIColor colorWithRed:0.440 green:0.525 blue:0.673 alpha:1.000];
+        _linesColor = [UIColor colorWithRed:54.0/255.0 green:139.0/255.0 blue:229/255.0 alpha:1.0];
         _autoresizeToFitData = NO;
         _dataPointsXoffset = 100.0f;
         self.backgroundColor = [UIColor whiteColor];
@@ -33,42 +31,37 @@
     return self;
 }
 
-- (NSNumber *)maxDataPoint {
-    if (_maxDataPoint) {
-        return _maxDataPoint;
-    } else {
-        __block CGFloat max = ((NSNumber *)self.dataPoints[0]).floatValue;
-        [self.dataPoints enumerateObjectsUsingBlock:^(NSNumber *n, NSUInteger idx, BOOL *stop) {
-            if (n.floatValue > max)
-                max = n.floatValue;
-        }];
-        return @(max);
+- (FDDataPoint *)maxDataPointUsingSelector:(SEL)comp {
+    if (self.dataPoints.count)
+    {
+        NSArray *sortedArray = [self.dataPoints sortedArrayUsingSelector:comp];
+        return (FDDataPoint *)sortedArray[sortedArray.count-1];
     }
+    else
+        return nil;
 }
 
-- (NSNumber *)minDataPoint {
-    if (_minDataPoint) {
-        return _minDataPoint;
-    } else {
-        __block CGFloat min = ((NSNumber *)self.dataPoints[0]).floatValue;
-        [self.dataPoints enumerateObjectsUsingBlock:^(NSNumber *n, NSUInteger idx, BOOL *stop) {
-            if (n.floatValue < min)
-                min = n.floatValue;
-        }];
-        return @(min);
+- (FDDataPoint *)minDataPointUsingSelector:(SEL)comp {
+    if (self.dataPoints.count)
+    {
+        NSArray *sortedArray = [self.dataPoints sortedArrayUsingSelector:comp];
+        return (FDDataPoint *)sortedArray[0];
     }
+    else
+        return nil;
 }
 
-- (CGFloat)widhtToFitData {
+- (CGFloat)widthToFitData {
     CGFloat res = 0;
     
-    if (self.dataPoints) {
+    if (self.dataPoints.count) {
         res += (self.dataPoints.count - 1)*self.dataPointsXoffset; // space occupied by data points
         res += (self.edgeInsets.left + self.edgeInsets.right) ; // lateral margins;
     }
     
     return res;
 }
+
 
 - (void)drawRect:(CGRect)rect
 {
@@ -80,50 +73,62 @@
     // lines width
     CGContextSetLineWidth(context, 3);
     
-    // CALCOLO I PUNTI DEL GRAFICO
+    // CHART POINT CALCULATION
     NSInteger count = self.dataPoints.count;
     CGPoint graphPoints[count];
-    
-    CGFloat drawingWidth, drawingHeight, min, max;
-    
-    drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
-    drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
-    min = ((NSNumber *)[self minDataPoint]).floatValue;
-    max = ((NSNumber *)[self maxDataPoint]).floatValue;
-    
-    if (count > 1) {
+
+    CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
+    CGFloat drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
+    CGFloat minY = ((FDDataPoint *)[self minDataPointUsingSelector:@selector(compareY:)]).y;
+    CGFloat maxY = ((FDDataPoint *)[self maxDataPointUsingSelector:@selector(compareY:)]).y;
+    CGFloat minX = ((FDDataPoint *)[self minDataPointUsingSelector:@selector(compareX:)]).x;
+    CGFloat maxX = ((FDDataPoint *)[self maxDataPointUsingSelector:@selector(compareX:)]).x;
+
+    if (count > 0) {
         for (int i = 0; i < count; ++i) {
-            CGFloat x, y, dataPointValue;
-            
-            dataPointValue = ((NSNumber *)self.dataPoints[i]).floatValue;
-            
-            x = self.edgeInsets.left + (drawingWidth/(count-1))*i;
-            if (max != min)
-                y = rect.size.height - ( self.edgeInsets.bottom + drawingHeight*( (dataPointValue - min) / (max - min) ) );
-            else // il grafico si riduce a una retta
+            CGFloat x, y;
+
+            FDDataPoint *dataPointValue = (FDDataPoint *)self.dataPoints[i];
+
+            // determine x coordinate
+            if (maxX != minX)
+                x = rect.size.width - (self.edgeInsets.left + drawingWidth*((dataPointValue.x-maxX) / (minX-maxX)));
+            else    // the graph is a vertical line
+                x = rect.size.width/2;
+
+            // determine y coordinate
+            if (maxY != minY)
+                y = rect.size.height - (self.edgeInsets.bottom + drawingHeight*((dataPointValue.y-minY) / (maxY-minY)));
+            else // the graph is a horizontal line
                 y = rect.size.height/2;
-            
+
             graphPoints[i] = CGPointMake(x, y);
         }
-    } else if (count == 1) {
-        // pongo il punto al centro del grafico
-        graphPoints[0].x = drawingWidth/2;
-        graphPoints[0].y = drawingHeight/2;
     } else {
         return;
     }
-    
-    // DISEGNO IL GRAFICO
+
+    // CREATE THE CHART
     CGContextAddLines(context, graphPoints, count);
     CGContextStrokePath(context);
     
-    // DISEGNO I CERCHI NEL GRANO
+    // DRAW THE CIRCLES
     for (int i = 0; i < count; ++i) {
         CGRect ellipseRect = CGRectMake(graphPoints[i].x-3, graphPoints[i].y-3, 6, 6);
         CGContextAddEllipseInRect(context, ellipseRect);
         CGContextSetLineWidth(context, 2);
-        [self.dataPointStrokeColor setStroke];
-        [self.dataPointColor setFill];
+
+        // set the datapoint colors
+        FDDataPoint *dataPointValue = (FDDataPoint *)self.dataPoints[i];
+        if (dataPointValue.color)
+            [dataPointValue.color setFill];
+        else
+            [self.defaultDataPointColor setFill];
+        if (dataPointValue.strokeColor)
+            [dataPointValue.strokeColor setStroke];
+        else
+            [self.defaultDataPointStrokeColor setStroke];
+
         CGContextFillEllipseInRect(context, ellipseRect);
         CGContextStrokeEllipseInRect(context, ellipseRect);
     }
@@ -135,35 +140,31 @@
     self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, width, self.frame.size.height);
 }
 
-- (void)setDataPointsXoffset:(CGFloat)dataPointsXoffset {
-    _dataPointsXoffset = dataPointsXoffset;
-    
+- (void)autoresizeIfSet {
     if (self.autoresizeToFitData) {
-        CGFloat widthToFitData = [self widhtToFitData];
+        CGFloat widthToFitData = [self widthToFitData];
         if (widthToFitData > self.frame.size.width) {
             [self changeFrameWidthTo:widthToFitData];
         }
     }
+}
+
+- (void)setDataPointsXoffset:(CGFloat)dataPointsXoffset {
+    _dataPointsXoffset = dataPointsXoffset;
+    
+    [self autoresizeIfSet];
 }
 
 - (void)setAutoresizeToFitData:(BOOL)autoresizeToFitData {
     _autoresizeToFitData = autoresizeToFitData;
     
-    CGFloat widthToFitData = [self widhtToFitData];
-    if (widthToFitData > self.frame.size.width) {
-        [self changeFrameWidthTo:widthToFitData];
-    }
+    [self autoresizeIfSet];
 }
 
 - (void)setDataPoints:(NSArray *)dataPoints {
     _dataPoints = dataPoints;
     
-    if (self.autoresizeToFitData) {
-        CGFloat widthToFitData = [self widhtToFitData];
-        if (widthToFitData > self.frame.size.width) {
-            [self changeFrameWidthTo:widthToFitData];
-        }
-    }
+    [self autoresizeIfSet];
 }
 
 @end

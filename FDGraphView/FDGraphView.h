@@ -17,8 +17,8 @@
 @property (nonatomic) UIEdgeInsets edgeInsets;
 @property (nonatomic) CGFloat dataPointsXoffset;
 // -- colors
-@property (nonatomic, strong) UIColor *dataPointColor;
-@property (nonatomic, strong) UIColor *dataPointStrokeColor;
+@property (nonatomic, strong) UIColor *defaultDataPointColor;
+@property (nonatomic, strong) UIColor *defaultDataPointStrokeColor;
 @property (nonatomic, strong) UIColor *linesColor;
 
 // Behaviour
