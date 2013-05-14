@@ -9,6 +9,10 @@
 #import "FDGraphView.h"
 #import "FDDataPoint.h"
 
+#define gStandardColor
+#define gMinorColor
+#define gMajorColor
+
 @interface FDGraphView()
 
 @end
@@ -21,8 +25,8 @@
     if (self) {
         // default values
         _edgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
-        _defaultDataPointColor = [UIColor whiteColor];
-        _defaultDataPointStrokeColor = [UIColor colorWithRed:0.440 green:0.525 blue:0.673 alpha:1.000];
+        //_defaultDataPointColor = [self colorForDataPointType:FDDataPointTypeStandard];//[UIColor whiteColor];
+        //_defaultDataPointStrokeColor = [UIColor colorWithRed:0.440 green:0.525 blue:0.673 alpha:1.000];
         _linesColor = [UIColor colorWithRed:54.0/255.0 green:139.0/255.0 blue:229/255.0 alpha:1.0];
         _autoresizeToFitData = NO;
         _dataPointsXoffset = 100.0f;
@@ -120,14 +124,8 @@
 
         // set the datapoint colors
         FDDataPoint *dataPointValue = (FDDataPoint *)self.dataPoints[i];
-        if (dataPointValue.color)
-            [dataPointValue.color setFill];
-        else
-            [self.defaultDataPointColor setFill];
-        if (dataPointValue.strokeColor)
-            [dataPointValue.strokeColor setStroke];
-        else
-            [self.defaultDataPointStrokeColor setStroke];
+
+        [self setColorsForDataPointType:dataPointValue.type];
 
         CGContextFillEllipseInRect(context, ellipseRect);
         CGContextStrokeEllipseInRect(context, ellipseRect);
@@ -165,6 +163,23 @@
     _dataPoints = dataPoints;
     
     [self autoresizeIfSet];
+}
+
+- (void)setColorsForDataPointType:(FDDataPointType)type {
+    switch (type) {
+        case FDDataPointTypeStandard:
+            [[UIColor whiteColor] setFill];
+            [[UIColor colorWithRed:0.440 green:0.525 blue:0.673 alpha:1.000] setStroke];
+            break;
+        case FDDataPointTypeMajor:
+            [[UIColor blackColor] setFill];
+            [[UIColor redColor] setStroke];
+            break;
+        case FDDataPointTypeMinor:
+            [[UIColor whiteColor] setFill];
+            [[UIColor colorWithRed:0.0 green:0.525 blue:0.673 alpha:0.5] setStroke];
+            break;
+    }
 }
 
 @end

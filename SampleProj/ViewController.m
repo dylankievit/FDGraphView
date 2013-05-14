@@ -30,13 +30,13 @@
 
     FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
     [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:3 Y:1 withColor:[UIColor blackColor] withStroke:nil];
+    dp = [[FDDataPoint alloc] initWithX:3 Y:1 type:FDDataPointTypeMinor];
     [myDataPoints addObject:dp];
     dp = [[FDDataPoint alloc] initWithX:2 Y:25];
     [myDataPoints addObject:dp];
     dp = [[FDDataPoint alloc] initWithX:4 Y:15];
     [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:5 Y:12 withColor:nil withStroke:[UIColor colorWithRed:140.0/255.0 green:20.0/255.0 blue:45/255.0 alpha:1.0]];
+    dp = [[FDDataPoint alloc] initWithX:5 Y:12 type:FDDataPointTypeMajor];
     [myDataPoints addObject:dp];
     dp = [[FDDataPoint alloc] initWithX:10 Y:100];
     [myDataPoints addObject:dp];

@@ -1,5 +1,6 @@
 //
 //  FDDataPoint.h
+//  FDGraphView
 //
 //  Created by Dylan Kievit on 5/11/13.
 //  Copyright (c) 2013 Dylan Kievit. All rights reserved.
@@ -7,10 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
+typedef enum : NSInteger {
+	FDDataPointTypeStandard,
+	FDDataPointTypeMajor,
+	FDDataPointTypeMinor
+} FDDataPointType;
+
 @interface FDDataPoint : NSObject
 
 - (id)initWithX:(CGFloat)initX Y:(CGFloat)initY;
-- (id)initWithX:(CGFloat)initX Y:(CGFloat)initY withColor:(UIColor*)color withStroke:(UIColor *)stroke;
+- (id)initWithX:(CGFloat)initX Y:(CGFloat)initY type:(FDDataPointType)type;
 
 - (NSComparisonResult)compareX:(FDDataPoint *)otherDataPoint;
 - (NSComparisonResult)compareY:(FDDataPoint *)otherDataPoint;
@@ -18,7 +25,6 @@
 @property (nonatomic) CGFloat x;
 @property (nonatomic) CGFloat y;
 
-@property (nonatomic, strong) UIColor *color;
-@property (nonatomic, strong) UIColor *strokeColor;
+@property (nonatomic) FDDataPointType type;
 
 @end
