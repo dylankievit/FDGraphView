@@ -14,7 +14,7 @@ Add `FDGraphView.{h,m}` to your project, import the header where you want to use
     
     FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
     [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:2 Y:2 withColor:[UIColor blackColor] withStroke:nil];
+    dp = [[FDDataPoint alloc] initWithX:2 Y:2 type:FDDataPointTypeMinor];
     [myDataPoints addObject:dp];
     dp = [[FDDataPoint alloc] initWithX:4 Y:3];
     [myDataPoints addObject:dp];
@@ -43,7 +43,7 @@ Add `FDGraphScrollView.{h,m}` to your project, import the header where you want 
    
     FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
     [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:2 Y:2 withColor:[UIColor blackColor] withStroke:nil];
+    dp = [[FDDataPoint alloc] initWithX:2 Y:2 type:FDDataPointTypeMajor];
     [myDataPoints addObject:dp];
     dp = [[FDDataPoint alloc] initWithX:4 Y:3];
     [myDataPoints addObject:dp];
