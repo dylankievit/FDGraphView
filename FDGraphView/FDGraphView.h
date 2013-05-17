@@ -16,9 +16,8 @@
 // Style
 @property (nonatomic) UIEdgeInsets edgeInsets;
 @property (nonatomic) CGFloat dataPointsXoffset;
+@property (nonatomic) BOOL drawShadow;
 // -- colors
-@property (nonatomic, strong) UIColor *defaultDataPointColor;
-@property (nonatomic, strong) UIColor *defaultDataPointStrokeColor;
 @property (nonatomic, strong) UIColor *linesColor;
 
 // Behaviour

@@ -25,9 +25,8 @@
     if (self) {
         // default values
         _edgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
-        //_defaultDataPointColor = [self colorForDataPointType:FDDataPointTypeStandard];//[UIColor whiteColor];
-        //_defaultDataPointStrokeColor = [UIColor colorWithRed:0.440 green:0.525 blue:0.673 alpha:1.000];
         _linesColor = [UIColor colorWithRed:54.0/255.0 green:139.0/255.0 blue:229/255.0 alpha:1.0];
+        _drawShadow = YES;
         _autoresizeToFitData = NO;
         _dataPointsXoffset = 100.0f;
         self.backgroundColor = [UIColor whiteColor];
@@ -72,6 +71,9 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     // STYLE
+    // shadow color
+    if (self.drawShadow)
+        CGContextSetShadowWithColor(context, CGSizeMake(0,-1), 1, [[UIColor lightGrayColor] CGColor]);
     // lines color
     [self.linesColor setStroke];
     // lines width
@@ -166,18 +168,16 @@
 }
 
 - (void)setColorsForDataPointType:(FDDataPointType)type {
+    [self.backgroundColor setFill];
     switch (type) {
         case FDDataPointTypeStandard:
-            [[UIColor whiteColor] setFill];
-            [[UIColor colorWithRed:0.440 green:0.525 blue:0.673 alpha:1.000] setStroke];
+            [[UIColor colorWithRed:0.400 green:0.800 blue:1.000 alpha:1.000] setStroke];
             break;
         case FDDataPointTypeMajor:
-            [[UIColor blackColor] setFill];
-            [[UIColor redColor] setStroke];
+            [[UIColor colorWithRed:1.000 green:220/255.0 blue:0.000 alpha:1.000] setStroke];
             break;
         case FDDataPointTypeMinor:
-            [[UIColor whiteColor] setFill];
-            [[UIColor colorWithRed:0.0 green:0.525 blue:0.673 alpha:0.5] setStroke];
+            [[UIColor colorWithWhite:0.902 alpha:1.000] setStroke];
             break;
     }
 }
