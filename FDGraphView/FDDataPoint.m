@@ -27,12 +27,22 @@
 
 - (NSComparisonResult)compareX:(FDDataPoint *)otherDataPoint
 {
-    return self.x - otherDataPoint.x;
+    if (self.x < otherDataPoint.x)
+        return NSOrderedAscending;
+    else if (self.x > otherDataPoint.x)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
 }
 
 - (NSComparisonResult)compareY:(FDDataPoint *)otherDataPoint
 {
-    return self.y - otherDataPoint.y;
+    if (self.y < otherDataPoint.y)
+        return NSOrderedAscending;
+    else if (self.y > otherDataPoint.y)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
 }
 
 
