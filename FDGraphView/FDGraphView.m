@@ -24,7 +24,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         // default values
-        _edgeInsets = UIEdgeInsetsMake(10, 10, 10, 10);
+        _edgeInsets = UIEdgeInsetsMake(10, 30, 20, 10);
         _linesColor = [UIColor colorWithRed:54.0/255.0 green:139.0/255.0 blue:229/255.0 alpha:1.0];
         _drawShadow = YES;
         _autoresizeToFitData = NO;
@@ -69,6 +69,9 @@
 - (void)drawRect:(CGRect)rect
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
+
+    [self drawAxes:rect];
+    CGContextSaveGState(context);
     
     // STYLE
     // shadow color
@@ -128,6 +131,55 @@
         CGContextFillEllipseInRect(context, ellipseRect);
         CGContextStrokeEllipseInRect(context, ellipseRect);
     }
+    CGContextRestoreGState(context);
+}
+
+- (void)drawAxes:(CGRect)rect
+{
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSaveGState(context);   // save the context state
+
+    // set axes number label format
+    NSNumberFormatter *numberFormat = [[NSNumberFormatter alloc]init];
+    [numberFormat setNumberStyle:NSNumberFormatterDecimalStyle];
+    [numberFormat setRoundingMode:NSNumberFormatterRoundHalfUp];
+    [numberFormat setMaximumFractionDigits:1];
+    [numberFormat setMinimumFractionDigits:0];
+
+    int axesTextSize = 7;
+
+    // set grid line style
+    CGContextSetLineWidth(context, 1);
+    CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 0.1);
+
+    //CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
+    CGFloat drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
+
+
+    // draw y axis
+    int yIntervals = 5; // number of horizontal lines to draw. this should probably be determined by vertical span or graph height
+    double yAxisInterval = (self.maxY-self.minY)/(yIntervals-1);    // difference between intervals
+    int yAxisDivs = ceil((self.maxY-self.minY) / yAxisInterval) + 1;
+    double divHeight = drawingHeight / (yAxisDivs-1);
+
+    // draw each y-axis gridline and associate text label
+    for (int i=0; i<yAxisDivs; i++) {
+		double yAxisVal = self.maxY - i*yAxisInterval;  // value for label
+		double yGridLoc = self.edgeInsets.top + divHeight*i;
+
+        CGRect textFrame = CGRectMake(0,yGridLoc-axesTextSize+1,self.edgeInsets.left-3.5,15);
+
+        // format and print the label for this grid line
+		NSString *yAxisLabel = [numberFormat stringFromNumber:[NSNumber numberWithDouble:yAxisVal]];
+		[yAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:axesTextSize] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
+
+		// draw the grid lines
+		CGContextMoveToPoint(context, self.edgeInsets.left, yGridLoc);
+		CGContextAddLineToPoint(context, self.frame.size.width-self.edgeInsets.right, yGridLoc);
+		CGContextStrokePath(context);
+	}
+
+    CGContextRestoreGState(context);    // restore context state so these settings don't persist
 }
 
 #pragma mark - Custom setters
