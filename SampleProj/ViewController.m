@@ -28,20 +28,14 @@
 
     NSMutableArray *myDataPoints = [[NSMutableArray alloc] init];
 
-    FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:3 Y:1 type:FDDataPointTypeMinor];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:2 Y:25];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:4 Y:15];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:5 Y:12 type:FDDataPointTypeMajor];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:10 Y:100];
-    [myDataPoints addObject:dp];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:1 Y:1]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:2 Y:5 type:FDDataPointTypeMinor]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:3 Y:26 type:FDDataPointTypeMajor]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:4 Y:102]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:6 Y:58]];
 
-    graphView.dataPoints = [[NSArray alloc] initWithArray:myDataPoints];
+
+    graphView.dataPoints = myDataPoints;
 }
 
 @end
