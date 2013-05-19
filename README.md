@@ -11,17 +11,15 @@ Add `FDGraphView.{h,m}` to your project, import the header where you want to use
     FDGraphView *graphView = [[FDGraphView alloc] initWithFrame:CGRectMake(10, 130, 300, 200)];
 
     NSMutableArray *myDataPoints = [[NSMutableArray alloc] init];
-    
-    FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:2 Y:2 type:FDDataPointTypeMinor];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:4 Y:3];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:5 Y:15];
-    [myDataPoints addObject:dp];
-    graphView.dataPoints = [[NSArray alloc] initWithArray:myDataPoints];
-    
+
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:1 Y:1]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:2 Y:5 type:FDDataPointTypeMinor]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:3 Y:26 type:FDDataPointTypeMajor]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:4 Y:102]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:6 Y:58]];
+
+    graphView.dataPoints = myDataPoints;
+
     [self.view addSubview:graphView];
 
 ![](sample.png)
@@ -40,16 +38,14 @@ Add `FDGraphScrollView.{h,m}` to your project, import the header where you want 
     
     // data
     NSMutableArray *myDataPoints = [[NSMutableArray alloc] init];
-   
-    FDDataPoint *dp = [[FDDataPoint alloc] initWithX:1 Y:1];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:2 Y:2 type:FDDataPointTypeMajor];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:4 Y:3];
-    [myDataPoints addObject:dp];
-    dp = [[FDDataPoint alloc] initWithX:5 Y:15];
-    [myDataPoints addObject:dp];
-    scrollView.dataPoints = [[NSArray alloc] initWithArray:myDataPoints];
+
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:1 Y:1]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:2 Y:5 type:FDDataPointTypeMinor]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:3 Y:26 type:FDDataPointTypeMajor]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:4 Y:102]];
+    [myDataPoints addObject:[[FDDataPoint alloc] initWithX:6 Y:58]];
+
+    scrollView.dataPoints = myDataPoints;
 
     [self.view addSubview:scrollView];
 
