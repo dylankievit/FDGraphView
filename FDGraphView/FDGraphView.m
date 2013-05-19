@@ -65,6 +65,26 @@
     return res;
 }
 
+- (CGFloat)xCoordForVal:(CGFloat)xVal rect:(CGRect)rect {
+    CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
+
+    // determine x coordinate
+    if (self.maxX != self.minX)
+        return rect.size.width - (self.edgeInsets.right + drawingWidth*((xVal-self.maxX) / (self.minX-self.maxX)));
+    else    // the graph is a vertical line
+        return rect.size.width/2;
+}
+
+- (CGFloat)yCoordForVal:(CGFloat)yVal rect:(CGRect)rect {
+    CGFloat drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
+
+    // determine y coordinate
+    if (self.maxY != self.minY)
+        return rect.size.height - (self.edgeInsets.bottom + drawingHeight*((yVal-self.minY) / (self.maxY-self.minY)));
+    else // the graph is a horizontal line
+        return rect.size.height/2;
+}
+
 
 - (void)drawRect:(CGRect)rect
 {
@@ -86,26 +106,14 @@
     NSInteger count = self.dataPoints.count;
     CGPoint graphPoints[count];
 
-    CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
-    CGFloat drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
-
     if (count > 0) {
         for (int i = 0; i < count; ++i) {
             CGFloat x, y;
 
             FDDataPoint *dataPointValue = (FDDataPoint *)self.dataPoints[i];
 
-            // determine x coordinate
-            if (self.maxX != self.minX)
-                x = rect.size.width - (self.edgeInsets.right + drawingWidth*((dataPointValue.x-self.maxX) / (self.minX-self.maxX)));
-            else    // the graph is a vertical line
-                x = rect.size.width/2;
-
-            // determine y coordinate
-            if (self.maxY != self.minY)
-                y = rect.size.height - (self.edgeInsets.bottom + drawingHeight*((dataPointValue.y-self.minY) / (self.maxY-self.minY)));
-            else // the graph is a horizontal line
-                y = rect.size.height/2;
+            x = [self xCoordForVal:dataPointValue.x rect:rect];
+            y = [self yCoordForVal:dataPointValue.y rect:rect];
 
             graphPoints[i] = CGPointMake(x, y);
         }
