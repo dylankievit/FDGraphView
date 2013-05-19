@@ -153,14 +153,15 @@
     [numberFormat setRoundingMode:NSNumberFormatterRoundHalfUp];
     [numberFormat setMaximumFractionDigits:1];
     [numberFormat setMinimumFractionDigits:0];
+    CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:0.298 alpha:1.000].CGColor);
 
     int axesTextSize = 7;
 
     // set grid line style
     CGContextSetLineWidth(context, 1);
-    CGContextSetRGBStrokeColor(context, 0.5, 0.5, 0.5, 0.1);
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.800 alpha:0.500].CGColor);
 
-    //CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
+    CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
     CGFloat drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
 
 
@@ -171,7 +172,7 @@
     double divHeight = drawingHeight / (yAxisDivs-1);
 
     // draw each y-axis gridline and associate text label
-    for (int i=0; i<yAxisDivs; i++) {
+    for (int i=0; i<yAxisDivs; ++i) {
 		double yAxisVal = self.maxY - i*yAxisInterval;  // value for label
 		double yGridLoc = self.edgeInsets.top + divHeight*i;
 
@@ -181,11 +182,33 @@
 		NSString *yAxisLabel = [numberFormat stringFromNumber:[NSNumber numberWithDouble:yAxisVal]];
 		[yAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:axesTextSize] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
 
-		// draw the grid lines
+		// draw a grid line
 		CGContextMoveToPoint(context, self.edgeInsets.left, yGridLoc);
 		CGContextAddLineToPoint(context, self.frame.size.width-self.edgeInsets.right, yGridLoc);
 		CGContextStrokePath(context);
 	}
+
+
+    CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.200 alpha:0.700].CGColor);    // darken grid line style for tick marks
+
+    int xAxisDivs = self.dataPoints.count;
+    //double xAxisInterval = self.dataPoints.count/xAxisDivs;
+    CGFloat xAxisLabelWidth = drawingWidth/xAxisDivs;
+    for (int i=0; i<xAxisDivs; ++i) {
+        double xAxisVal = ((FDDataPoint *)self.dataPoints[i]).x;
+        CGFloat xGridLoc = [self xCoordForVal:xAxisVal rect:rect];
+
+        CGRect textFrame = CGRectMake(xGridLoc-xAxisLabelWidth/2,rect.size.height-self.edgeInsets.bottom+axesTextSize/2,xAxisLabelWidth,15);
+
+        // format and print the label
+		NSString *xAxisLabel = [numberFormat stringFromNumber:[NSNumber numberWithDouble:xAxisVal]];
+		[xAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:axesTextSize] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+
+        // draw a grid tick mark
+		CGContextMoveToPoint(context, xGridLoc, rect.size.height-self.edgeInsets.bottom+2);
+		CGContextAddLineToPoint(context, xGridLoc, rect.size.height-self.edgeInsets.bottom-3);
+		CGContextStrokePath(context);
+    }
 
     CGContextRestoreGState(context);    // restore context state so these settings don't persist
 }
