@@ -157,20 +157,18 @@
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.800 alpha:0.500].CGColor);
 
     CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
-    CGFloat drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
 
 
     // draw y axis
     int yIntervals = 5; // number of horizontal lines to draw. this should probably be determined by vertical span or graph height
     double yAxisInterval = (self.maxY-self.minY)/(yIntervals-1);    // difference between intervals
     int yAxisDivs = ceil((self.maxY-self.minY) / yAxisInterval) + 1;
-    double divHeight = drawingHeight / (yAxisDivs-1);
     CGFloat yAxisTextSize = self.edgeInsets.left/3;
 
     // draw each y-axis gridline and associate text label
     for (int i=0; i<yAxisDivs; ++i) {
 		double yAxisVal = self.maxY - i*yAxisInterval;  // value for label
-		double yGridLoc = self.edgeInsets.top + divHeight*i;
+        double yGridLoc = [self yCoordForVal:yAxisVal rect:rect];
 
         CGRect textFrame = CGRectMake(0,yGridLoc-yAxisTextSize+1,self.edgeInsets.left-3.5,15);
 
@@ -185,26 +183,31 @@
 	}
 
 
+    // draw x axis
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.200 alpha:0.700].CGColor);    // darken grid line style for tick marks
 
-    int xAxisDivs = self.dataPoints.count;
-    //double xAxisInterval = self.dataPoints.count/xAxisDivs;
-    CGFloat xAxisLabelWidth = drawingWidth/xAxisDivs;
+    int xIntervals = self.maxX-self.minX+1;
+    double xAxisInterval = (self.maxX-self.minX)/(xIntervals-1);    // difference between intervals
+    int xAxisDivs = ceil((self.maxX-self.minX) / xAxisInterval) + 1;
+    double divWidth = drawingWidth / (xAxisDivs);
+    CGFloat xAxisTextSize = self.edgeInsets.bottom/1.5;
+
     for (int i=0; i<xAxisDivs; ++i) {
-        double xAxisVal = ((FDDataPoint *)self.dataPoints[i]).x;
-        CGFloat xGridLoc = [self xCoordForVal:xAxisVal rect:rect];
+        double xAxisVal = self.maxX - i*xAxisInterval;
+        double xGridLoc = [self xCoordForVal:xAxisVal rect:rect];
 
-        CGRect textFrame = CGRectMake(xGridLoc-xAxisLabelWidth/2,rect.size.height-self.edgeInsets.bottom+2,xAxisLabelWidth,15);
+        CGRect textFrame = CGRectMake(xGridLoc-divWidth/2,rect.size.height-self.edgeInsets.bottom+2,divWidth,15);
 
-        // format and print the label
+        // format and print the label for this grid line
 		NSString *xAxisLabel = [numberFormat stringFromNumber:[NSNumber numberWithDouble:xAxisVal]];
-		[xAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:self.edgeInsets.bottom/1.5] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+		[xAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:xAxisTextSize] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
 
         // draw a grid tick mark
 		CGContextMoveToPoint(context, xGridLoc, rect.size.height-self.edgeInsets.bottom+2);
 		CGContextAddLineToPoint(context, xGridLoc, rect.size.height-self.edgeInsets.bottom-3);
 		CGContextStrokePath(context);
     }
+
 
     CGContextRestoreGState(context);    // restore context state so these settings don't persist
 }
