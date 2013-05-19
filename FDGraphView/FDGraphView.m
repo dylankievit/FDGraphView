@@ -85,10 +85,6 @@
 
     CGFloat drawingWidth = rect.size.width - self.edgeInsets.left - self.edgeInsets.right;
     CGFloat drawingHeight = rect.size.height - self.edgeInsets.top - self.edgeInsets.bottom;
-    CGFloat minY = ((FDDataPoint *)[self minDataPointUsingSelector:@selector(compareY:)]).y;
-    CGFloat maxY = ((FDDataPoint *)[self maxDataPointUsingSelector:@selector(compareY:)]).y;
-    CGFloat minX = ((FDDataPoint *)[self minDataPointUsingSelector:@selector(compareX:)]).x;
-    CGFloat maxX = ((FDDataPoint *)[self maxDataPointUsingSelector:@selector(compareX:)]).x;
 
     if (count > 0) {
         for (int i = 0; i < count; ++i) {
@@ -97,14 +93,14 @@
             FDDataPoint *dataPointValue = (FDDataPoint *)self.dataPoints[i];
 
             // determine x coordinate
-            if (maxX != minX)
-                x = rect.size.width - (self.edgeInsets.left + drawingWidth*((dataPointValue.x-maxX) / (minX-maxX)));
+            if (self.maxX != self.minX)
+                x = rect.size.width - (self.edgeInsets.right + drawingWidth*((dataPointValue.x-self.maxX) / (self.minX-self.maxX)));
             else    // the graph is a vertical line
                 x = rect.size.width/2;
 
             // determine y coordinate
-            if (maxY != minY)
-                y = rect.size.height - (self.edgeInsets.bottom + drawingHeight*((dataPointValue.y-minY) / (maxY-minY)));
+            if (self.maxY != self.minY)
+                y = rect.size.height - (self.edgeInsets.bottom + drawingHeight*((dataPointValue.y-self.minY) / (self.maxY-self.minY)));
             else // the graph is a horizontal line
                 y = rect.size.height/2;
 
@@ -163,6 +159,11 @@
 
 - (void)setDataPoints:(NSArray *)dataPoints {
     _dataPoints = dataPoints;
+
+    self.minY = ((FDDataPoint *)[self minDataPointUsingSelector:@selector(compareY:)]).y;
+    self.maxY = ((FDDataPoint *)[self maxDataPointUsingSelector:@selector(compareY:)]).y;
+    self.minX = ((FDDataPoint *)[self minDataPointUsingSelector:@selector(compareX:)]).x;
+    self.maxX = ((FDDataPoint *)[self maxDataPointUsingSelector:@selector(compareX:)]).x;
     
     [self autoresizeIfSet];
 }

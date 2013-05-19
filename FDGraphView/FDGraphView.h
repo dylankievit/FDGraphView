@@ -13,6 +13,11 @@
 // Data
 @property (nonatomic, strong) NSArray *dataPoints;
 
+@property (nonatomic) CGFloat minX;
+@property (nonatomic) CGFloat maxX;
+@property (nonatomic) CGFloat minY;
+@property (nonatomic) CGFloat maxY;
+
 // Style
 @property (nonatomic) UIEdgeInsets edgeInsets;
 @property (nonatomic) CGFloat dataPointsXoffset;
