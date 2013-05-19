@@ -1,12 +1,11 @@
 //
-//  FDCaptionGraphView.h
-//  SampleProj
+//  FDGraphScrollView.h
+//  FDGraphView
 //
-//  Created by frank on 20/03/13.
+//  Created by Francesco Di Lorenzo on 20/03/13.
 //  Copyright (c) 2013 Francesco Di Lorenzo. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "FDGraphView.h"
 
 @class FDGraphScrollView;
@@ -21,7 +20,7 @@
 
 @interface FDGraphScrollView : UIScrollView
 
-@property (nonatomic, strong) FDGraphView *graphView;
+@property (strong, nonatomic) FDGraphView *graphView;
 
 - (void)setDataPoints:(NSArray *)dataPoints;
 

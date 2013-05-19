@@ -1,6 +1,6 @@
 //
 //  FDGraphView.m
-//  disegno
+//  FDGraphView
 //
 //  Created by Francesco Di Lorenzo on 14/03/13.
 //  Copyright (c) 2013 Francesco Di Lorenzo. All rights reserved.
@@ -9,9 +9,6 @@
 #import "FDGraphView.h"
 #import "FDDataPoint.h"
 
-#define gStandardColor
-#define gMinorColor
-#define gMajorColor
 
 @interface FDGraphView()
 
@@ -24,8 +21,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         // default values
-        _edgeInsets = UIEdgeInsetsMake(10, 30, 20, 10);
-        _linesColor = [UIColor colorWithRed:54.0/255.0 green:139.0/255.0 blue:229/255.0 alpha:1.0];
+        _edgeInsets = UIEdgeInsetsMake(10, 30, 18, 10);
+        _lineColor = [UIColor colorWithRed:54.0/255.0 green:139.0/255.0 blue:229/255.0 alpha:1.0];
         _drawShadow = YES;
         _autoresizeToFitData = NO;
         _dataPointsXoffset = 100.0f;
@@ -98,7 +95,7 @@
     if (self.drawShadow)
         CGContextSetShadowWithColor(context, CGSizeMake(0,-1), 1, [[UIColor lightGrayColor] CGColor]);
     // lines color
-    [self.linesColor setStroke];
+    [self.lineColor setStroke];
     // lines width
     CGContextSetLineWidth(context, 3);
     
@@ -155,8 +152,6 @@
     [numberFormat setMinimumFractionDigits:0];
     CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:0.298 alpha:1.000].CGColor);
 
-    int axesTextSize = 7;
-
     // set grid line style
     CGContextSetLineWidth(context, 1);
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.800 alpha:0.500].CGColor);
@@ -170,17 +165,18 @@
     double yAxisInterval = (self.maxY-self.minY)/(yIntervals-1);    // difference between intervals
     int yAxisDivs = ceil((self.maxY-self.minY) / yAxisInterval) + 1;
     double divHeight = drawingHeight / (yAxisDivs-1);
+    CGFloat yAxisTextSize = self.edgeInsets.left/3;
 
     // draw each y-axis gridline and associate text label
     for (int i=0; i<yAxisDivs; ++i) {
 		double yAxisVal = self.maxY - i*yAxisInterval;  // value for label
 		double yGridLoc = self.edgeInsets.top + divHeight*i;
 
-        CGRect textFrame = CGRectMake(0,yGridLoc-axesTextSize+1,self.edgeInsets.left-3.5,15);
+        CGRect textFrame = CGRectMake(0,yGridLoc-yAxisTextSize+1,self.edgeInsets.left-3.5,15);
 
         // format and print the label for this grid line
 		NSString *yAxisLabel = [numberFormat stringFromNumber:[NSNumber numberWithDouble:yAxisVal]];
-		[yAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:axesTextSize] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
+		[yAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:yAxisTextSize] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
 
 		// draw a grid line
 		CGContextMoveToPoint(context, self.edgeInsets.left, yGridLoc);
@@ -198,11 +194,11 @@
         double xAxisVal = ((FDDataPoint *)self.dataPoints[i]).x;
         CGFloat xGridLoc = [self xCoordForVal:xAxisVal rect:rect];
 
-        CGRect textFrame = CGRectMake(xGridLoc-xAxisLabelWidth/2,rect.size.height-self.edgeInsets.bottom+axesTextSize/2,xAxisLabelWidth,15);
+        CGRect textFrame = CGRectMake(xGridLoc-xAxisLabelWidth/2,rect.size.height-self.edgeInsets.bottom+2,xAxisLabelWidth,15);
 
         // format and print the label
 		NSString *xAxisLabel = [numberFormat stringFromNumber:[NSNumber numberWithDouble:xAxisVal]];
-		[xAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:axesTextSize] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
+		[xAxisLabel drawInRect:textFrame withFont:[UIFont fontWithName:@"Futura-Medium" size:self.edgeInsets.bottom/1.5] lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentCenter];
 
         // draw a grid tick mark
 		CGContextMoveToPoint(context, xGridLoc, rect.size.height-self.edgeInsets.bottom+2);

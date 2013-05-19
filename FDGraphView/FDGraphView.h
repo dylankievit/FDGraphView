@@ -1,6 +1,6 @@
 //
 //  FDGraphView.h
-//  disegno
+//  FDGraphView
 //
 //  Created by Francesco Di Lorenzo on 14/03/13.
 //  Copyright (c) 2013 Francesco Di Lorenzo. All rights reserved.
@@ -11,7 +11,7 @@
 @interface FDGraphView : UIView
 
 // Data
-@property (nonatomic, strong) NSArray *dataPoints;
+@property (strong, nonatomic) NSArray *dataPoints;
 
 @property (nonatomic) CGFloat minX;
 @property (nonatomic) CGFloat maxX;
@@ -23,7 +23,7 @@
 @property (nonatomic) CGFloat dataPointsXoffset;
 @property (nonatomic) BOOL drawShadow;
 // -- colors
-@property (nonatomic, strong) UIColor *linesColor;
+@property (strong, nonatomic) UIColor *lineColor;
 
 // Behaviour
 @property (nonatomic) BOOL autoresizeToFitData;

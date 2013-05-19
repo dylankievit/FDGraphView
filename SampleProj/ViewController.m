@@ -1,6 +1,6 @@
 //
 //  ViewController.m
-//  SampleProj
+//  FDGraphView
 //
 //  Created by Francesco Di Lorenzo on 15/03/13.
 //  Copyright (c) 2013 Francesco Di Lorenzo. All rights reserved.

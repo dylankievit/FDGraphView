@@ -1,8 +1,8 @@
 //
-//  FDCaptionGraphView.m
-//  SampleProj
+//  FDGraphScrollView.m
+//  FDGraphView
 //
-//  Created by frank on 20/03/13.
+//  Created by Francesco Di Lorenzo on 20/03/13.
 //  Copyright (c) 2013 Francesco Di Lorenzo. All rights reserved.
 //
 

@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Dylan Kievit. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 
 typedef enum : NSInteger {
 	FDDataPointTypeStandard,
